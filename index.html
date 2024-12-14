@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FedEx Tracking</title>
+    <style>
+        /* Navbar Styling */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+        .navbar {
+            background-color: #4d148c;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+        }
+        .navbar-logo img {
+            height: 30px;
+            margin-right: 10px;
+        }
+        .navbar-menu {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-grow: 1;
+        }
+        .navbar-menu a {
+            color: white;
+            text-decoration: none;
+            position: relative;
+            padding: 0 5px;
+        }
+        .navbar-menu a::after {
+            content: '\25BE';
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+        .menu-toggle {
+            display: none;
+            background-color: transparent;
+            border: none;
+            font-size: 1.5em;
+            color: white;
+        }
+        .menu-toggle:focus {
+            outline: none;
+        }
+        .navbar-menu.collapsed {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            text-align: center;
+        }
+        .navbar-menu.expanded {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background-color: #4d148c;
+            padding: 10px;
+        }
+
+        /* Tracking Section */
+        .tracking-container {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            max-width: 600px;
+            margin: 80px auto 20px auto; /* Adjusted for fixed navbar */
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            align-items: flex-start;
+        }
+        .tracking-header {
+            text-align: center;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        .tracking-header h1 {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+        .tracking-header .tracking-id {
+            font-weight: bold;
+            color: #4d148c;
+        }
+        .tracking-progress {
+            position: relative;
+            padding-left: 40px;
+            text-align: left;
+            width: 100%;
+        }
+        .tracking-line {
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: #28a745;
+            border-radius: 2px;
+        }
+        .tracking-step {
+            position: relative;
+            padding: 10px 20px;
+            margin-left: 40px;
+        }
+        .tracking-step::before {
+            content: "";
+            position: absolute;
+            left: -20px;
+            top: 10px;
+            width: 10px;
+            height: 10px;
+            background-color: white;
+            border: 2px solid #4d148c;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .tracking-step.completed::before {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+        .tracking-step p {
+            margin: 0;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+        .tracking-step .time {
+            font-size: 0.9em;
+            color: #4d148c;
+            margin-bottom: 5px;
+        }
+        .tracking-step .location {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .tracking-step .status {
+            color: #555;
+            margin-bottom: 5px;
+        }
+        .tracking-step:last-child {
+            margin-bottom: 0;
+        }
+        .tracking-date {
+            margin: 20px 0;
+            padding-left: 60px;
+            font-size: 1em;
+            font-weight: bold;
+            color: #4d148c;
+        }
+        .tracking-delivered {
+            margin-top: 20px;
+            background: #e6ffe6;
+            padding: 15px;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            .navbar-menu {
+                display: none;
+            }
+            .tracking-container {
+                padding: 15px;
+                max-width: 90%;
+            }
+            .tracking-header h1 {
+                font-size: 1.2em;
+            }
+            .tracking-step {
+                padding: 10px;
+            }
+            .tracking-step p {
+                font-size: 0.9em;
+            }
+            .tracking-date {
+                font-size: 0.9em;
+            }
+            .tracking-delivered {
+                padding: 10px;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .tracking-container {
+                max-width: 80%;
+            }
+            .tracking-step {
+                padding: 10px;
+            }
+        }
+    </style>
+    <script>
+        function toggleMenu() {
+            const menu = document.querySelector('.navbar-menu');
+            menu.classList.toggle('collapsed');
+            menu.classList.toggle('expanded');
+        }
+    </script>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="navbar-logo">
+            <img src="logo.png" alt="FedEx Logo">
+        </div>
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <div class="navbar-menu collapsed">
+            <a href="#">Shipping</a>
+            <a href="#">Tracking</a>
+            <a href="#">Support</a>
+            <a href="#">Account</a>
+        </div>
+    </div>
+
+    <!-- Tracking Section -->
+    <div class="tracking-container">
+        <div class="tracking-header">
+            <h1>Tracking ID</h1>
+            <p class="tracking-id">770294159234</p>
+        </div>
+
+        <div class="tracking-progress">
+            <div class="tracking-line"></div>
+
+            <div class="tracking-step">
+                <p class="time">13:57</p>
+                <p class="location">Shipment information sent to FedEx</p>
+            </div>
+
+            <p class="tracking-date">Friday, 13/12/2024</p>
+
+            <div class="tracking-step">
+                <p class="time">03:33</p>
+                <p class="location">Departed FedEx hub</p>
+                <p class="status">MEMPHIS, TN</p>
+            </div>
+
+            <div class="tracking-step">
+                <p class="time">03:34</p>
+                <p class="location">Delivery updated</p>
+                <p class="status">MEMPHIS, TN</p>
+            </div>
+
+            <div class="tracking-step">
+                <p class="time">05:39</p>
+                <p class="location">At destination sort facility</p>
+                <p class="status">TALLAHASSEE, FL</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
